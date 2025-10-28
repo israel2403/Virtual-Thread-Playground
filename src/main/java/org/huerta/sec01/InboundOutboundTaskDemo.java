@@ -32,7 +32,10 @@ public class InboundOutboundTaskDemo {
         Thread.Builder.OfPlatform builder = Thread.ofPlatform().daemon().name("daemon", 1);
         for (int i = 0; i <  MAX_PLATFORM; i++) {
             int j = i;
-            Thread thread = builder.unstarted(()-> Task.ioIntensive(j));
+            Thread thread = builder.unstarted(()-> {
+                Task.ioIntensive(j);
+                latch.countDown();
+            });
             thread.start();
         }
         latch.await();
