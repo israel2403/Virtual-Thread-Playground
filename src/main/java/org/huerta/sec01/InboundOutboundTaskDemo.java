@@ -9,8 +9,10 @@ public class InboundOutboundTaskDemo {
      */
     private static final int MAX_PLATFORM = 10;
 
+    private static final int MAX_VIRTUAL = 10;
+
     public static void main(String[] args) throws InterruptedException {
-        platformThreadDemo3();
+        virtualThreadDemo();
     }
 
     /*
@@ -51,5 +53,18 @@ public class InboundOutboundTaskDemo {
             thread.start();
         }
         latch.await();
+    }
+
+    /*
+        To  create virtual thread using Thread.Builder
+         - virtual threads are daemon by default
+     */
+    private static void virtualThreadDemo(){
+       var builder = Thread.ofVirtual();
+        for (int i = 0; i <  MAX_VIRTUAL; i++) {
+            int j = i;
+            Thread thread = builder.unstarted(()-> Task.ioIntensive(j));
+            thread.start();
+        }
     }
 }
