@@ -17,9 +17,10 @@ public class InboundOutboundTaskDemo {
     }
 
     private static void platformThreadDemo2(){
+        Thread.Builder.OfPlatform builder = Thread.ofPlatform().name("isra", 1);
         for (int i = 0; i <  MAX_PLATFORM; i++) {
             int j = i;
-            Thread thread = Thread.ofPlatform().unstarted(()-> Task.ioIntensive(j));
+            Thread thread = builder.unstarted(()-> Task.ioIntensive(j));
             thread.start();
         }
     }
