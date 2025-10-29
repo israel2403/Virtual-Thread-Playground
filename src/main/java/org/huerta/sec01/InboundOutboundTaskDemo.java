@@ -9,7 +9,7 @@ public class InboundOutboundTaskDemo {
      */
     private static final int MAX_PLATFORM = 10;
 
-    private static final int MAX_VIRTUAL = 10;
+    private static final int MAX_VIRTUAL = 50_000;
 
     public static void main(String[] args) throws InterruptedException {
         virtualThreadDemo();
@@ -18,10 +18,10 @@ public class InboundOutboundTaskDemo {
     /*
         To create a simple java platform thread
      */
-    private static void platformThreadDemo1(){
-        for (int i = 0; i <  MAX_PLATFORM; i++) {
+    private static void platformThreadDemo1() {
+        for (int i = 0; i < MAX_PLATFORM; i++) {
             int j = i;
-            Thread thread = new Thread(()-> Task.ioIntensive(j));
+            Thread thread = new Thread(() -> Task.ioIntensive(j));
             thread.start();
         }
     }
@@ -29,11 +29,11 @@ public class InboundOutboundTaskDemo {
     /*
         To  create platform thread using Thread.Builder
      */
-    private static void platformThreadDemo2(){
+    private static void platformThreadDemo2() {
         Thread.Builder.OfPlatform builder = Thread.ofPlatform().name("isra", 1);
-        for (int i = 0; i <  MAX_PLATFORM; i++) {
+        for (int i = 0; i < MAX_PLATFORM; i++) {
             int j = i;
-            Thread thread = builder.unstarted(()-> Task.ioIntensive(j));
+            Thread thread = builder.unstarted(() -> Task.ioIntensive(j));
             thread.start();
         }
     }
@@ -44,9 +44,9 @@ public class InboundOutboundTaskDemo {
     private static void platformThreadDemo3() throws InterruptedException {
         var latch = new CountDownLatch(MAX_PLATFORM);
         Thread.Builder.OfPlatform builder = Thread.ofPlatform().daemon().name("daemon", 1);
-        for (int i = 0; i <  MAX_PLATFORM; i++) {
+        for (int i = 0; i < MAX_PLATFORM; i++) {
             int j = i;
-            Thread thread = builder.unstarted(()-> {
+            Thread thread = builder.unstarted(() -> {
                 Task.ioIntensive(j);
                 latch.countDown();
             });
@@ -61,15 +61,15 @@ public class InboundOutboundTaskDemo {
      */
     private static void virtualThreadDemo() throws InterruptedException {
         var latch = new CountDownLatch(MAX_VIRTUAL);
-       var builder = Thread.ofVirtual();
-        for (int i = 0; i <  MAX_VIRTUAL; i++) {
+        var builder = Thread.ofVirtual().name("virtual-isra-", 1);
+        for (int i = 0; i < MAX_VIRTUAL; i++) {
             int j = i;
-            Thread thread = builder.unstarted(()-> {
+            Thread thread = builder.unstarted(() -> {
                 Task.ioIntensive(j);
                 latch.countDown();
             });
             thread.start();
         }
-        latch.wait();
+        latch.await();
     }
 }
