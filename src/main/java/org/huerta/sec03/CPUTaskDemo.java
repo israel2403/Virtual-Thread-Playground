@@ -12,7 +12,14 @@ public class CPUTaskDemo {
     public static final int TASKS_COUNT = 1;
 
     public static void main(String[] args) {
-        demo(Thread.ofVirtual());
+        log.info("Task Count: {}", TASKS_COUNT);
+        for (int i = 0; i < 3; i++) {
+            var totalTimeTaken = CommonUtils.timer(()->demo(Thread.ofVirtual()));
+            log.info("Total time taken with virtual {} ms", totalTimeTaken);
+
+            totalTimeTaken = CommonUtils.timer(()->demo(Thread.ofPlatform()));
+            log.info("Total time taken with platform {} ms", totalTimeTaken);
+        }
     }
 
     public static void demo(Thread.Builder builder){
